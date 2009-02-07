@@ -30,6 +30,7 @@ module Fleakr
       # authenticated.
       #
       def initialize(method, additional_parameters = {})
+        additional_parameters[:authenticate?] = true if automatically_authenticate?(method)
         @parameters = ParameterList.new(additional_parameters)
         
         self.method = method
@@ -49,6 +50,10 @@ module Fleakr
       end
       
       private
+      def automatically_authenticate?(method)
+        Fleakr.token && !(method =~ /(^|^flickr\.)auth\./) ? true : false
+      end
+      
       def endpoint_uri
         uri = URI.parse('http://api.flickr.com/services/rest/')
         uri.query = self.parameters.to_query

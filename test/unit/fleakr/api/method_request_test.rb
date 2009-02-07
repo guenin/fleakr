@@ -35,7 +35,7 @@ module Fleakr::Api
           ParameterList.expects(:new).with(:authenticate? => true).returns(stub(:<< => nil))
           request = MethodRequest.new('activity.userPhotos', :authenticate? => true)
         end
-
+        
         it "should know the endpoint with full parameters" do
           query_parameters = 'foo=bar'
         
@@ -94,6 +94,24 @@ module Fleakr::Api
           lambda do
             MethodRequest.with_response!('flickr.people.findByUsername', :username => 'foobar')
           end.should raise_error(Fleakr::ApiError)
+        end
+        
+        context 'with an auth token' do
+          setup { Fleakr.stubs(:token).returns(stub) }
+          
+          it "should authenticate the request automatically" do
+            ParameterList.expects(:new).with(:authenticate? => true).returns(stub(:<< => nil))
+            request = MethodRequest.new('activity.userPhotos')
+          end
+        end
+        
+        context 'without an auth token' do
+          setup { Fleakr.stubs(:token).returns(nil) }
+          
+          it "should not authenticate the request automatically" do
+            ParameterList.expects(:new).with({}).returns(stub(:<< => nil))
+            request = MethodRequest.new('activity.userPhotos')
+          end
         end
         
       end

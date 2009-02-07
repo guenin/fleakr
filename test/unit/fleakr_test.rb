@@ -137,6 +137,14 @@ class FleakrTest < Test::Unit::TestCase
       
     end
     
+    context "when we have no method of generating an AuthenticationToken" do
+      
+      it "should return nil" do
+        Fleakr.token.should be(nil)
+      end
+      
+    end
+    
   end
   
 end
