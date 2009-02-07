@@ -51,7 +51,7 @@ module Fleakr
       
       private
       def automatically_authenticate?(method)
-        Fleakr.token && !(method =~ /(^|^flickr\.)auth\./) ? true : false
+        !(method =~ /(^|^flickr\.)auth\./) && Fleakr.token ? true : false
       end
       
       def endpoint_uri
