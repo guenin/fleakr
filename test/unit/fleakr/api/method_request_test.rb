@@ -106,11 +106,23 @@ module Fleakr::Api
         end
         
         context 'without an auth token' do
-          setup { Fleakr.stubs(:token).returns(nil) }
+          setup do
+            Fleakr.stubs(:token).returns(nil)
+            ParameterList.expects(:new).with({}).returns(stub(:<< => nil))
+          end
           
           it "should not authenticate the request automatically" do
-            ParameterList.expects(:new).with({}).returns(stub(:<< => nil))
             request = MethodRequest.new('activity.userPhotos')
+          end
+          
+          it "should not call Fleakr.token when requesting an auth.* method" do
+            Fleakr.stubs(:token).raises('Fleakr.token should not have been called')
+            request = MethodRequest.new('auth.getToken')
+          end
+          
+          it "should not call Fleakr.token when requesting a flickr.auth.* method" do
+            Fleakr.stubs(:token).raises('Fleakr.token should not have been called')
+            request = MethodRequest.new('flickr.auth.getToken')
           end
         end
         
